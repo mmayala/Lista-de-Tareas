@@ -1,25 +1,26 @@
 <body>
-    <div class="container">
+    <div class="container" >
         <h1>TODO LIST</h1>
-        <div class="input-container">
-            <input type="text" [(ngModel)]="newTask" class="title" placeholder="Título">
-            <button type="submit" (click)="addTask()" class="btn-add">Agregar</button>
-        </div>
-      
-       
+        <form [formGroup]="formTask" (ngSubmit)="addTask()">
+            <div class="input-container">
+                
+                <input type="text"  formControlName="newTask" class="title" placeholder="Título">
+                <span class="messageError" [hidden]="newTask?.valid || newTask?.pristine">Por favor agregar una tarea</span>
+                <button  class="btn-add" [disabled]="formTask.invalid">Agregar</button>
+            </div>
+        </form>
         <div class="tasks">
+                
             <ul>    
-                <li *ngFor="let task of tasks" class="listTasks">
-                    <input class="checkbox" type="checkbox" (click)="completeItem()"/>
-                    <span [ngClass]="{'to-complete': isComplete}">{{task}}</span>
-                    <button class="btn-delete">Eliminar</button>
+                <li *ngFor="let task of tasks" [class.completed]="task.completed" class="listTasks">
+                    <input class="checkbox" type="checkbox" [(ngModel)]="task.completed" (click)="completeItem(task)">
+                    <span [ngClass]="{'isComplete': task.completed}">{{task.name}}</span>
+                    <button (click)="deletetTask(task.id)"class="btn-delete">Eliminar</button>
                 </li>
             </ul>
-
+            <p *ngIf ="listTaskEmpty()" class="empty">{{messageError}}</p>
+            <p class="tasksPending">{{ updateTasksPending() }}</p>
         </div>
-        
-
-        
 
     </div>
 </body>
